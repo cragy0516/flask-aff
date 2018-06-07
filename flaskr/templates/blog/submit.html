@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Submit "{{ challenge['title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {{ g.user['username'] }}
+  <form method="post">
+    <label for="body">Source Code</label>
+    <textarea name="body" id="body"></textarea>
+    This is for {{ request.form['score'] or challenge['score'] }} points.
+    <input type="hidden" name="username" value="{{ g.user['username'] }}">
+    <input type="submit" value="Submit">
+  </form>
+  <hr>
+{% endblock %}
