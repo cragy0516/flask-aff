@@ -14,9 +14,25 @@ def index() :
 	challenges = db.execute(
 		'SELECT c.id, title, body, score'
 		' FROM challenge c'
-		' ORDER BY id DESC'
+		' ORDER BY id ASC'
 	).fetchall()
 	return render_template('blog/index.html', challenges=challenges)
+
+@bp.route('/ranking')
+def ranking() :
+    db = get_db()
+    users = db.execute(
+		'SELECT u.id, username, score'
+		' FROM user u'
+		' ORDER BY score DESC'
+	).fetchall()
+    return render_template('blog/ranking.html', users=users)
+
+@bp.route('/<int:id>/chall', methods=('GET', 'POST'))
+@login_required
+def view_chall(id):
+    challenge = get_post(id)
+    return render_template('blog/chall.html', challenge=challenge)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @must_admin
@@ -112,6 +128,44 @@ def submit(id):
             result = resf.readline().strip()
             if (result == "correct"):
                 print(str(id) + " has been solved by " + g.user['username'])
+                db = get_db();
+                alreadySolved = db.execute(
+                    'SELECT s.id'
+                    ' FROM solved s'
+                    ' WHERE s.chall_id = ? AND s.solver_id = ?',
+                    (id, g.user['id'])
+                ).fetchone()
+                # print (alreadySolved)
+                if (alreadySolved is None) :
+                    # First solved!
+                    flash("정답입니다!")
+                    db.execute(
+                        'INSERT INTO solved (solver_id, chall_id)'
+                        ' VALUES (?, ?)',
+                        (g.user['id'], id,)
+                    )
+                    chall = db.execute(
+                        'SELECT score'
+                        ' FROM challenge c'
+                        ' WHERE c.id = ?',
+                        (id,)
+                    ).fetchone()
+                    newScore = chall['score'] + g.user['score']
+
+                    db.execute(
+                        'UPDATE user SET score = ?'
+                        ' WHERE id = ?',
+                        (newScore, g.user['id'])
+                    )
+                    print("Gained " + str(chall['score']) + " points. (" + str(newScore) + " points now)")
+                    db.commit()
+                else :
+                    # Already Solved!
+                    # do nothing...?
+                    flash("이미 푼 문제입니다.")
+                    print("Already solved")
+            else :
+                flash("틀렸습니다. 다시 시도 해 보세요.", 'fail')
             resf.close()
             return redirect(url_for('blog.index'))
 

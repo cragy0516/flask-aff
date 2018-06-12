@@ -12,18 +12,10 @@
     <article class="post">
       <header>
         <div>
-          <h1>{{ challenge['title'] }}</h1>
+          <h1><a class="action" href="{{ url_for('blog.view_chall', id=challenge['id']) }}"> {{ challenge['title'] }} </a></h1>
           <div class="about">for {{ challenge['score'] }} points</div>
         </div>
-        {% if g.user %}
-          {% if g.user['id'] == 1 %}
-            <a class="action" href="{{ url_for('blog.update', id=challenge['id']) }}">Edit</a>
-          {% else %}
-            <a class="action" href="{{ url_for('blog.submit', id=challenge['id']) }}">Submit</a>
-          {% endif %}
-        {% endif %}
       </header>
-      <p class="body">{{ challenge['body'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>

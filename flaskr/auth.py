@@ -13,6 +13,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        username = username.replace(' ','')
         db = get_db()
         error = None
 
@@ -27,7 +28,7 @@ def register():
 
         if error is None:
             db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
+                'INSERT INTO user (username, password, score) VALUES (?, ?, 0)',
                 (username, generate_password_hash(password))
             )
             db.commit()
