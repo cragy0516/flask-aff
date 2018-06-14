@@ -15,6 +15,3 @@ build/
 
 flaskr/files/cases/case_*.txt
 !flaskr/files/cases/case_example
-
-flaskr/files/results/*.txt
-flaskr/files/src/*.c
