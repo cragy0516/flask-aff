@@ -12,3 +12,6 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+flaskr/files/cases/case_*.txt
+!flaskr/files/cases/case_example

@@ -8,7 +8,7 @@ fi
 cd "${0%/*}"
 
 if [ ! -e "$PWD"/src/$1.c ] || [ ! -e "$PWD"/cases/check.sh ] || [ ! -e "$PWD"/cases/case_$2.txt ] || [ ! -e "$PWD"/cases/programs/case_$2 ]; then
-	echo "error"
+	echo "docker run error" > results/result_$1.txt
 	exit 1 
 fi
 
